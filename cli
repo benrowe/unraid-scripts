@@ -1,0 +1,7 @@
+#!/bin/bash
+# runs the ./cli.php in the php:7.0-cli container
+TMP_DOCKER_NAME="unraid-scripts"
+DOCKER_IMAGE="php:7.0-cli"
+PHP_ENTRY="cli.php"
+USER_DATA_DIR="/mnt/user/"
+docker run -it --rm --name $TMP_DOCKER_NAME -v "$PWD":/usr/src/myapp -v "$USER_DATA_DIR:/usr/data/" --env-file .env -w /usr/src/myapp "$DOCKER_IMAGE" php $PHP_ENTRY $@
