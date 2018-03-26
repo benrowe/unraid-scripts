@@ -14,31 +14,66 @@ if [ ! "$(command -v docker)" ]; then
 fi
 
 if [ "$1" == "init" ]; then
-    echo "init"
-    # setup
-    touch .env
+    echo "INIT"
+
+    if [ -f ".env" ]; then
+        echo -e ".env ${COLOR_ERROR}already exists${COLOR_DEFAULT}"
+        exit 1
+    fi
+
+    # Generate files
+    # .env
+    cat > .env <<- EOM
+DOCKER_CONTAINER_NAME="unraid-scripts"
+DOCKER_IMAGE_NAME="benrowe/unraid-scripts"
+USER_DATA_DIR="/mnt/user/"
+EOM
+
+    # config.yml
     echo '{}' > config.yml
+
     mkdir commands
     echo '{"require":{}}' > composer.json
-    # ./.env
-    # ./config.yml
-    # create ./commands directory
-    ./cli boot
+    ./cli start
+    exit
+fi
+
+# if no .env at this point, fail!
+
+if [ ! -f ".env" ]; then
+    echo -e "${COLOR_ERROR}.env file not found, please run ./cli init first${COLOR_DEFAULT}"
     exit 1
 fi
 
-if [ "$1" == "boot" ]; then
-    echo "boot"
+export $(cat .env | xargs) > /dev/null
+echo $BEN
+
+if [ "$1" == "start" ]; then
+    echo "start"
+    docker pull ${DOCKER_IMAGE_NAME}:latest
     exit 1
 fi
 
+if [ "$1" == "stop" ]; then
 
+    exit 1
+fi
 
+if [ "$1" == "remove" ]; then
+    #remove the container
+    exit 1
+fi
 
+if [ "$1" == "restart" ]; then
+    ./cli stop
+    ./cli start
+    exit 1
+fi
 
 # runs the ./cli.php in the php:7.0-cli container
-TMP_DOCKER_NAME="unraid-scripts"
+
 DOCKER_IMAGE="php:7.0-cli"
 PHP_ENTRY="cli.php"
-USER_DATA_DIR="/mnt/user/"
-docker run -it --rm --name $TMP_DOCKER_NAME -v "$PWD":/usr/src/myapp -v "$USER_DATA_DIR:/usr/data/" --env-file .env -w /usr/src/myapp "$DOCKER_IMAGE" php $PHP_ENTRY $@
+
+docker run -it --rm --name $DOCKER_CONTAINER_NAME -v "$PWD":/usr/src/myapp -v "$USER_DATA_DIR:/usr/data/" --env-file .env -w /usr/src/myapp "$DOCKER_IMAGE" php $PHP_ENTRY $@
+#docker run -it --rm -p 8888:8000 -v "$PWD:/usr/src/myapp" --env-file ./.env test:latest composer install -vvv && php -S 127.0.0.1:8000
