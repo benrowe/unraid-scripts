@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e
 
+function grab() {
+    if [ "$(command -v wget)" ]; then
+        wget $1 -p $2
+    else
+        curl $1 -o $2
+    fi
+}
+
 # todo, when booting the docker container, do a composer install
 
 COLOR_ERROR='\033[0;31m'
@@ -23,14 +31,10 @@ if [ "$1" == "init" ]; then
 
     # Generate files
     # .env
-    cat > .env <<- EOM
-DOCKER_CONTAINER_NAME="unraid-scripts"
-DOCKER_IMAGE_NAME="benrowe/unraid-scripts"
-USER_DATA_DIR="/mnt/user/"
-EOM
+    grab "https://raw.githubusercontent.com/benrowe/unraid-scripts/master/.env.example" ".env"
 
     # config.yml
-    echo '{}' > config.yml
+    grab "https://raw.githubusercontent.com/benrowe/unraid-scripts/master/config.yml" "config.yml"
 
     mkdir commands
     echo '{"require":{}}' > composer.json
@@ -45,22 +49,37 @@ if [ ! -f ".env" ]; then
     exit 1
 fi
 
-export $(cat .env | xargs) > /dev/null
-echo $BEN
+export $(egrep -v '^#' .env | xargs)
 
 if [ "$1" == "start" ]; then
     echo "start"
-    docker pull ${DOCKER_IMAGE_NAME}:latest
+    if [ ! "$(docker ps -a | grep $DOCKER_IMAGE_NAME)" ]; then
+        # create container, but don't start
+        echo "creating"
+        echo $DOCKER_IMAGE_NAME
+        docker run $DOCKER_CONTAINER_NAME  -v "$USER_DATA_DIR:/usr/data/" --env-file .env -w /usr/src/myapp "$DOCKER_IMAGE" php $PHP_ENTRY $@
+        docker create \
+            --name ${DOCKER_CONTAINER_NAME} \
+            -v "$PWD":/usr/src/myapp/data ${DOCKER_IMAGE_NAME}
+    fi
+    docker run ${DOCKER_CONTAINER_NAME}
     exit 1
 fi
 
 if [ "$1" == "stop" ]; then
-
+    docker stop ${DOCKER_CONTAINER_NAME}
     exit 1
 fi
 
 if [ "$1" == "remove" ]; then
     #remove the container
+
+    mkdir -p backup
+    mv .env backup
+    mv composer.json backup
+    mv config.yml backup
+    mv commands backup
+    docker rm --force ${DOCKER_CONTAINER_NAME}
     exit 1
 fi
 
