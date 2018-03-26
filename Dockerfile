@@ -8,7 +8,9 @@ RUN set -xe \
     && docker-php-ext-install \
         zip \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer global require hirak/prestissimo
+    && composer global require hirak/prestissimo \
+    && composer global require wikimedia/composer-merge-plugin
+    
 
 COPY . /usr/src/myapp
 WORKDIR /usr/scr/myapp
