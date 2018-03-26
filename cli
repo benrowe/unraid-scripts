@@ -1,4 +1,41 @@
 #!/bin/bash
+set -e
+
+# todo, when booting the docker container, do a composer install
+
+COLOR_ERROR='\033[0;31m'
+COLOR_INFO='\033[0;32m'
+COLOR_DEFAULT='\033[0m' # No Color
+
+# test we have docker installed
+if [ ! "$(command -v docker)" ]; then
+    echo -e "${COLOR_ERROR}Docker is not installed${COLOR_DEFAULT}"
+    exit 1
+fi
+
+if [ "$1" == "init" ]; then
+    echo "init"
+    # setup
+    touch .env
+    echo '{}' > config.yml
+    mkdir commands
+    echo '{"require":{}}' > composer.json
+    # ./.env
+    # ./config.yml
+    # create ./commands directory
+    ./cli boot
+    exit 1
+fi
+
+if [ "$1" == "boot" ]; then
+    echo "boot"
+    exit 1
+fi
+
+
+
+
+
 # runs the ./cli.php in the php:7.0-cli container
 TMP_DOCKER_NAME="unraid-scripts"
 DOCKER_IMAGE="php:7.0-cli"
