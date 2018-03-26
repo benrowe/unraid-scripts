@@ -17,14 +17,14 @@ This script has been designed to run from unraid, however you can use this utili
 
 Firstly create a new directory where you would like to install the cli tool
 
-### WGET
+Via WGET:
 
 ```bash
 wget https://raw.githubusercontent.com/benrowe/unraid-scripts/master/cli
 chmod +x cli
 ./cli init
 ```
-### CURL
+Via CURL:
 
 ```bash
 curl -O https://raw.githubusercontent.com/benrowe/unraid-scripts/master/cli
@@ -39,6 +39,16 @@ chmod +x cli
 from the installed directory
 
 ## How to add your own scripts/contribute
+
+Once the init script, you will be provided with a few base files/directories
+
+.env: any environment variables you want injected into the container. Also available within php via the `getenv()` function.
+
+composer.json: any custom dependancies required by your commands
+
+config.yml: webhook configuration file (maps http requests to a command)
+
+./commands/: where you should store your commands. They must be defined under the `App\Commands` namespace
 
 ## Notes
 
