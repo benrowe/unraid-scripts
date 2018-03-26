@@ -49,26 +49,37 @@ if [ ! -f ".env" ]; then
     exit 1
 fi
 
-export $(cat .env | xargs) > /dev/null
+export $(egrep -v '^#' .env | xargs)
 
 if [ "$1" == "start" ]; then
     echo "start"
-    docker pull "${DOCKER_IMAGE_NAME}"
+    if [ ! "$(docker ps -a | grep $DOCKER_IMAGE_NAME)" ]; then
+        # create container, but don't start
+        echo "creating"
+        echo $DOCKER_IMAGE_NAME
+        docker run $DOCKER_CONTAINER_NAME  -v "$USER_DATA_DIR:/usr/data/" --env-file .env -w /usr/src/myapp "$DOCKER_IMAGE" php $PHP_ENTRY $@
+        docker create \
+            --name ${DOCKER_CONTAINER_NAME} \
+            -v "$PWD":/usr/src/myapp/data ${DOCKER_IMAGE_NAME}
+    fi
+    docker run ${DOCKER_CONTAINER_NAME}
     exit 1
 fi
 
 if [ "$1" == "stop" ]; then
-
+    docker stop ${DOCKER_CONTAINER_NAME}
     exit 1
 fi
 
 if [ "$1" == "remove" ]; then
     #remove the container
+
     mkdir -p backup
     mv .env backup
     mv composer.json backup
     mv config.yml backup
     mv commands backup
+    docker rm --force ${DOCKER_CONTAINER_NAME}
     exit 1
 fi
 
@@ -83,5 +94,5 @@ fi
 DOCKER_IMAGE="php:7.0-cli"
 PHP_ENTRY="cli.php"
 
-docker run -it --rm --name $DOCKER_CONTAINER_NAME -v "$PWD":/usr/src/myapp -v "$USER_DATA_DIR:/usr/data/" --env-file .env -w /usr/src/myapp "$DOCKER_IMAGE" php $PHP_ENTRY $@
+docker run $DOCKER_CONTAINER_NAME -v "$PWD":/usr/src/myapp/data -v "$USER_DATA_DIR:/usr/data/" --env-file .env -w /usr/src/myapp "$DOCKER_IMAGE" php $PHP_ENTRY $@
 #docker run -it --rm -p 8888:8000 -v "$PWD:/usr/src/myapp" --env-file ./.env test:latest composer install -vvv && php -S 127.0.0.1:8000
