@@ -1,6 +1,13 @@
 # Unraid Scripts
 
-This is a cli utility for running unraid based utility scripts via php & docker
+This is a command line interface (cli) utility for running
+`symfony/console` commands within a docker container.
+
+You can easily write your own command's using the `symfony/console` package constructs. These commands will be available via the `./cli` script which will run the command inside a docker container.
+
+If your commands require additional dependancies, you can specify them in the composer.json file provided.
+
+In addition to this, the command will boot a docker container that provides a webhook interface to remotely execute the commands you build. This can be configured by the provided `config.yml`
 
 ## Requirements
 
