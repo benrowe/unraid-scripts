@@ -17,4 +17,5 @@ WORKDIR /usr/scr/myapp
 
 EXPOSE 8000
 
-ENTRYPOINT ["php", "-S 127.0.0.1:8000"]
+ENTRYPOINT ["/bin/sh -c"]
+CMD "composer install -vvv && php -S 127.0.0.1:8000"
