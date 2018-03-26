@@ -5,12 +5,14 @@ ENV COMPOSER_HOME /root/composer
 ENV COMPOSER_VERSION master
 
 RUN set -xe \
+    && apt-get update \
+    && apt-get install -y zip zlib1g-dev \
     && docker-php-ext-install \
         zip \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require hirak/prestissimo \
     && composer global require wikimedia/composer-merge-plugin
-    
+
 
 COPY . /usr/src/myapp
 WORKDIR /usr/scr/myapp
