@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e
 
+function grab() {
+    if [ "$(command -v wget)" ]; then
+        wget $1 -p $2
+    else
+        curl $1 -o $2
+    fi
+}
+
 # todo, when booting the docker container, do a composer install
 
 COLOR_ERROR='\033[0;31m'
@@ -23,14 +31,10 @@ if [ "$1" == "init" ]; then
 
     # Generate files
     # .env
-    cat > .env <<- EOM
-DOCKER_CONTAINER_NAME="unraid-scripts"
-DOCKER_IMAGE_NAME="benrowe/unraid-scripts"
-USER_DATA_DIR="/mnt/user/"
-EOM
+    grab "https://raw.githubusercontent.com/benrowe/unraid-scripts/master/.env.example" ".env"
 
     # config.yml
-    echo '{}' > config.yml
+    grab "https://raw.githubusercontent.com/benrowe/unraid-scripts/master/config.yml" "config.yml"
 
     mkdir commands
     echo '{"require":{}}' > composer.json
