@@ -15,9 +15,7 @@ RUN set -xe \
 
 
 COPY . /usr/src/myapp
-WORKDIR /usr/scr/myapp
-
-EXPOSE 8000
+WORKDIR /usr/src/myapp
 
 ENTRYPOINT ["/bin/sh", "-c"]
-CMD ["composer install -vvv && php -S 127.0.0.1:8000"]
+CMD ["composer install -vvv && php -S 127.0.0.1:8888"]
