@@ -55,7 +55,7 @@ ARG=$1
 
 if [[ $ARG =~ ^(cli:)?start$ ]]; then
     echo "start"
-    if [ ! "$(docker ps -a | grep $DOCKER_IMAGE_NAME)" ]; then
+    if [ $(docker ps -a | grep ${DOCKER_IMAGE_NAME} | wc -l | tr -d '[:space:]') == "0" ]; then
         # create container, but don't start
         echo "creating"
 
@@ -63,17 +63,18 @@ if [[ $ARG =~ ^(cli:)?start$ ]]; then
             --name $DOCKER_CONTAINER_NAME \
             -v "$PWD":/usr/src/myapp/data \
             -v "$USER_DATA_DIR":/usr/data/ \
-            -p 8888:8888
-            --env-file .env
-            "$DOCKER_IMAGE_NAME"
+            -p 8888:8888 \
+            --env-file .env \
+            $DOCKER_IMAGE_NAME
     fi
-    docker run $DOCKER_CONTAINER_NAME
-    exit 1
+    echo "test"
+    docker start $DOCKER_CONTAINER_NAME
+    exit
 fi
 
 if [[ $ARG =~ ^(cli:)?stop$ ]]; then
     docker stop $DOCKER_CONTAINER_NAME
-    exit 1
+    exit
 fi
 
 if [[ $ARG =~ ^(cli:)?remove$ ]]; then
@@ -85,13 +86,13 @@ if [[ $ARG =~ ^(cli:)?remove$ ]]; then
     mv config.yml backup
     mv commands backup
     docker rm --force $DOCKER_CONTAINER_NAME
-    exit 1
+    exit
 fi
 
 if [[ $ARG =~ ^(cli:)?restart$ ]]; then
     ./cli stop
     ./cli start
-    exit 1
+    exit
 fi
 
 # runs the ./cli.php in the php:7.0-cli container
