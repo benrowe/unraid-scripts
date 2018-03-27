@@ -6,6 +6,7 @@
         "koriym/psr4list": "^1.0",
         "symfony/console": "^3.2",
         "symfony/http-foundation": "^4.0",
+        "vlucas/phpdotenv": "^2.4",
         "wikimedia/composer-merge-plugin": "^1.4"
     },
     "autoload": {
