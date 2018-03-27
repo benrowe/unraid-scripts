@@ -10,6 +10,7 @@ function grab() {
 }
 
 # todo, when booting the docker container, do a composer install
+# when creating a container, do a pull first
 
 COLOR_ERROR='\033[0;31m'
 COLOR_INFO='\033[0;32m'
@@ -67,7 +68,14 @@ if [[ $ARG =~ ^(cli:)?start$ ]]; then
             --env-file .env \
             $DOCKER_IMAGE_NAME
     fi
+    # @todo check for an updated image?
     docker start $DOCKER_CONTAINER_NAME
+    exit
+fi
+
+if [[ $ARG =~ ^(cli:)?update$ ]]; then
+    docker rm --force $DOCKER_CONTAINER_NAME
+    docker pull $DOCKER_IMAGE_NAME
     exit
 fi
 
