@@ -1,0 +1,11 @@
+# application config
+webhooks:
+  logfile: output.log
+  mappings:
+    - endpoint: my-custom-name
+      authToken: 239423949234
+      commands:
+        - name: hello:world
+          handler: App\Command\TestCommand::handleRequest
+        - name: hello:world
+          handler: App\Command\TestCommand::handleRequest
