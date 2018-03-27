@@ -18,5 +18,7 @@ RUN mkdir /usr/data
 COPY . /usr/src/myapp
 WORKDIR /usr/src/myapp
 
+EXPOSE 8888
+
 ENTRYPOINT ["/bin/sh", "-c"]
 CMD ["composer install -vvv && php -S 127.0.0.1:8888"]
