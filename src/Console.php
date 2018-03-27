@@ -8,10 +8,10 @@ use Koriym\Psr4List\Psr4List;
 
 /**
  * Console helper
-  *
+ *
  * @package App
  */
-class Console
+class Console extends Application
 {
 
     /**
@@ -26,18 +26,29 @@ class Console
      */
     public static function load(Application $application, string $namespace, string $path) : bool
     {
+        if (!is_dir($path)) {
+            return false;
+        }
         $list = new Psr4List;
 
         // go through each php class it can find
         foreach ($list($namespace, $path) as list($class, $file)) {
             $cmd = new $class;
             if ($cmd instanceof Command) {
-
                 $application->add($cmd);
             }
         }
 
         return true;
 
+    }
+
+    /**
+     * Handle the webhook request and return
+     */
+    public static function handleRequest(Request $request): ?Command
+    {
+        // convert the request url into a relevant command
+        return null;
     }
 }
