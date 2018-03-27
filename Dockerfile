@@ -21,4 +21,4 @@ WORKDIR /usr/src/myapp
 EXPOSE 8888
 
 ENTRYPOINT ["/bin/sh", "-c"]
-CMD ["composer install -vvv && php -S 127.0.0.1:8888"]
+CMD ["composer install -vvv && php -S 0.0.0.0:8888"]
