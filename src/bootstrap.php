@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 require_once 'vendor/autoload.php';
 
 use App\Console;
@@ -11,3 +12,8 @@ Console::load($application, 'App\Command', 'src/Command');
 Console::load($application, 'App\Commands', 'data/commands');
 
 return $application;
+=======
+/**
+ * bootstrap file
+ */
+>>>>>>> Added bootstrap
