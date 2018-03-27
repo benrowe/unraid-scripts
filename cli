@@ -53,7 +53,7 @@ export $(egrep -v '^#' .env | xargs)
 
 ARG=$1
 
-if [ $ARG =~ ^start$ ]; then
+if [[ $ARG =~ ^(cli:)?start$ ]]; then
     echo "start"
     if [ ! "$(docker ps -a | grep $DOCKER_IMAGE_NAME)" ]; then
         # create container, but don't start
@@ -71,12 +71,12 @@ if [ $ARG =~ ^start$ ]; then
     exit 1
 fi
 
-if [ $ARG == "stop" ]; then
+if [[ $ARG =~ ^(cli:)?stop$ ]]; then
     docker stop $DOCKER_CONTAINER_NAME
     exit 1
 fi
 
-if [ $ARG == "remove" ]; then
+if [[ $ARG =~ ^(cli:)?remove$ ]]; then
     #remove the container
 
     mkdir -p backup
@@ -88,7 +88,7 @@ if [ $ARG == "remove" ]; then
     exit 1
 fi
 
-if [ $ARG == "restart" ]; then
+if [[ $ARG =~ ^(cli:)?restart$ ]]; then
     ./cli stop
     ./cli start
     exit 1
