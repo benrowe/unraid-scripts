@@ -13,6 +13,7 @@ RUN set -xe \
     && composer global require hirak/prestissimo \
     && composer global require wikimedia/composer-merge-plugin
 
+RUN mkdir /usr/data
 
 COPY . /usr/src/myapp
 WORKDIR /usr/src/myapp
