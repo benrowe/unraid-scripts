@@ -1,9 +1,8 @@
 <?php
 
-<<<<<<< HEAD
-require_once 'vendor/autoload.php';
-
 use App\Console;
+
+require_once realpath(__DIR__.'/../').'/vendor/autoload.php';
 
 $application = new Console('Unraid Scripts', '1.0');
 
@@ -12,8 +11,3 @@ Console::load($application, 'App\Command', 'src/Command');
 Console::load($application, 'App\Commands', 'data/commands');
 
 return $application;
-=======
-/**
- * bootstrap file
- */
->>>>>>> Added bootstrap

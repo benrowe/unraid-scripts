@@ -4,8 +4,8 @@
  * entry point for webhook application
  */
 
-use Symfony\Component\HttpFoundation\Request;
 use App\ConsoleToWebhookHandler;
+use Symfony\Component\HttpFoundation\Request;
 
 /** */
 $app = require_once 'src/bootstrap.php';
