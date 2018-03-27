@@ -67,7 +67,6 @@ if [[ $ARG =~ ^(cli:)?start$ ]]; then
             --env-file .env \
             $DOCKER_IMAGE_NAME
     fi
-    echo "test"
     docker start $DOCKER_CONTAINER_NAME
     exit
 fi
