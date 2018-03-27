@@ -51,7 +51,9 @@ fi
 
 export $(egrep -v '^#' .env | xargs)
 
-if [ "$1" == "start" ]; then
+ARG=$1
+
+if [ $ARG =~ ^start$ ]; then
     echo "start"
     if [ ! "$(docker ps -a | grep $DOCKER_IMAGE_NAME)" ]; then
         # create container, but don't start
@@ -66,12 +68,12 @@ if [ "$1" == "start" ]; then
     exit 1
 fi
 
-if [ "$1" == "stop" ]; then
-    docker stop ${DOCKER_CONTAINER_NAME}
+if [ $ARG == "stop" ]; then
+    docker stop $DOCKER_CONTAINER_NAME
     exit 1
 fi
 
-if [ "$1" == "remove" ]; then
+if [ $ARG == "remove" ]; then
     #remove the container
 
     mkdir -p backup
@@ -79,11 +81,11 @@ if [ "$1" == "remove" ]; then
     mv composer.json backup
     mv config.yml backup
     mv commands backup
-    docker rm --force ${DOCKER_CONTAINER_NAME}
+    docker rm --force $DOCKER_CONTAINER_NAME
     exit 1
 fi
 
-if [ "$1" == "restart" ]; then
+if [ $ARG == "restart" ]; then
     ./cli stop
     ./cli start
     exit 1
