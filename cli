@@ -3,9 +3,9 @@ set -e
 
 function grab() {
     if [ "$(command -v wget)" ]; then
-        wget $1 -p $2
+        wget --quiet $1 -p $2
     else
-        curl $1 -o $2
+        curl -s $1 -o $2
     fi
 }
 
