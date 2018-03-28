@@ -2,6 +2,7 @@
 webhooks:
   logfile: output.log
   bindings:
+    # id's are CASE-INSENSATIVE
     - id: my-custom-name
       token: 239423949234
       commands:
