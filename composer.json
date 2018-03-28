@@ -3,7 +3,9 @@
     "description": "unraid scripts",
     "license": "MIT",
     "require": {
+        "hassankhan/config": "^1.0",
         "koriym/psr4list": "^1.0",
+        "shrikeh/teapot": "^2.3",
         "symfony/console": "^3.2",
         "symfony/http-foundation": "^4.0",
         "vlucas/phpdotenv": "^2.4",
