@@ -1,9 +1,10 @@
 # application config
 webhooks:
   logfile: output.log
-  mappings:
-    - endpoint: my-custom-name
-      authToken: 239423949234
+  bindings:
+    # id's are CASE-INSENSATIVE
+    - id: my-custom-name
+      token: 239423949234
       commands:
         - name: hello:world
           handler: App\Command\TestCommand::handleRequest
