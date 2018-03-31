@@ -2,9 +2,11 @@
 
 namespace App;
 
+use Noodlehaus\Config;
+use Koriym\Psr4List\Psr4List;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
-use Koriym\Psr4List\Psr4List;
+
 
 /**
  * Console helper
@@ -13,6 +15,7 @@ use Koriym\Psr4List\Psr4List;
  */
 class Console extends Application
 {
+    private $config;
 
     /**
      * Load console commands into the application based on the supplied namespace
@@ -41,6 +44,16 @@ class Console extends Application
 
         return true;
 
+    }
+
+    public function getConfig(): Config
+    {
+        return $this->config;
+    }
+
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
     }
 
     /**
