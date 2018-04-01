@@ -8,12 +8,10 @@ RUN set -xe \
     && apt-get update \
     && apt-get install -y zip zlib1g-dev \
     && docker-php-ext-install \
-        zip \
+        zip bcmath \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require hirak/prestissimo \
     && composer global require wikimedia/composer-merge-plugin
-
-RUN mkdir /usr/data
 
 COPY . /usr/src/myapp
 WORKDIR /usr/src/myapp

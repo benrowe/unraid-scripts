@@ -14,8 +14,7 @@ if (file_exists($rootDir.'/data/.env')) {
 
 $application = new Console('Unraid Scripts', '1.0');
 
-// detect and load console commands from the App\Command namespace
-Console::load($application, 'App\Command', 'src/Command');
+// detect and load console commands from the App\Commands namespace
 Console::load($application, 'App\Commands', 'data/commands');
 
 // load application config

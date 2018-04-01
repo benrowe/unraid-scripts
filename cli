@@ -38,7 +38,8 @@ if [ "$1" == "init" ]; then
     grab "https://raw.githubusercontent.com/benrowe/unraid-scripts/master/config.yml" "config.yml"
 
     mkdir commands
-    echo '{"require":{}}' > composer.json
+    grab "https://raw.githubusercontent.com/benrowe/unraid-scripts/master/sample/HelloCommand.php" "commands/HelloCommand.php"
+    echo '{"require":{"hashids/hashids":"^3.0"}}' > composer.json
     ./cli start
     exit
 fi
@@ -56,31 +57,32 @@ ARG=$1
 
 if [[ $ARG =~ ^(cli:)?start$ ]]; then
     echo "start"
-    if [ $(docker ps -a | grep ${DOCKER_IMAGE_NAME} | wc -l | tr -d '[:space:]') == "0" ]; then
+    if [ $(docker ps -a | grep unraid-scripts | wc -l | tr -d '[:space:]') == "0" ]; then
         # create container, but don't start
         echo "creating"
-
         docker create \
-            --name $DOCKER_CONTAINER_NAME \
-            -v "$PWD":/usr/src/myapp/data \
-            -v "$USER_DATA_DIR":/usr/data/ \
+            -v "${PWD}":/usr/src/myapp/data \
+            -v "${USER_DATA_DIR}":/usr/data/ \
             -p 8888:8888 \
             --env-file .env \
-            $DOCKER_IMAGE_NAME
+            --name unraid-scripts \
+            benrowe/unraid-scripts
+
     fi
     # @todo check for an updated image?
-    docker start $DOCKER_CONTAINER_NAME
+    docker start unraid-scripts
+    docker exec unraid-scripts composer update -vv
     exit
 fi
 
 if [[ $ARG =~ ^(cli:)?update$ ]]; then
-    docker rm --force $DOCKER_CONTAINER_NAME
+    docker rm --force unraid-scripts
     docker pull $DOCKER_IMAGE_NAME
     exit
 fi
 
 if [[ $ARG =~ ^(cli:)?stop$ ]]; then
-    docker stop $DOCKER_CONTAINER_NAME
+    docker stop unraid-scripts
     exit
 fi
 
@@ -92,7 +94,7 @@ if [[ $ARG =~ ^(cli:)?remove$ ]]; then
     mv composer.json backup
     mv config.yml backup
     mv commands backup
-    docker rm --force $DOCKER_CONTAINER_NAME
+    docker rm --force unraid-scripts
     exit
 fi
 
@@ -104,4 +106,4 @@ fi
 
 # runs the ./cli.php in the php:7.0-cli container
 
-docker run -it $DOCKER_CONTAINER_NAME php $PHP_ENTRY $@
+docker exec -it unraid-scripts php $PHP_ENTRY $@
