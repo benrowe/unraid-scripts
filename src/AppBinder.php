@@ -7,7 +7,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\StreamOutput;
 
 class AppBinder
 {
@@ -24,14 +24,14 @@ class AppBinder
 
     public function run()
     {
-        $output = new BufferedOutput;
+        $path = realpath(__DIR__.'/../data/').'/'.$this->app->getConfig()->get('webhooks.logfile');
+        $stream = fopen($path, 'w');
+        $output = new StreamOutput($stream);
 
         foreach ($this->binding->commands as $cmd) {
             $input = $this->getConsoleInput($cmd['name'], $cmd['handler'] ?? null);
             $this->app->run($input, $output);
-        }
-
-        // @todo write output to log file?
+        }        
     }
 
     private function getConsoleInput(string $cmdName, ?string $handler): InputInterface
