@@ -40,7 +40,7 @@ class AppBinder
             'command' => $cmdName
         ]);
         if ($handler) {
-            $input = call_user_func($handler);
+            $input = call_user_func($handler, $input, $this->request);
             if (!($input instanceof InputInterface)) {
                 throw new \RuntimeException($handler . ' is not instance of ' . InputInterface::class);
             }
